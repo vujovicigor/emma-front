@@ -4,7 +4,10 @@
   import { writable } from 'svelte/store'
   import { fade , fly} from 'svelte/transition';
   import { tick} from 'svelte';
+  import Client from '@/Client.svelte'
 
+  let showModal = false
+  let selectedRow = {}
   let loading = false
   let last_page = 0
   let params = writable({
@@ -13,7 +16,20 @@
     addr_city:null,
     show_all:true
   })
-$: console.log('last_page:', last_page, 'params.page:',$params.page)
+  let countries_list = []
+  let cities_list = []
+  setTimeout(()=>{
+    fetch2('get', 'public_countries_list', null)
+    .then((r)=>{
+      if (r && r[0])
+        countries_list = r[0].results 
+    })
+    fetch2('get', 'public_cities_list', null)
+    .then((r)=>{
+      if (r && r[0])
+        cities_list = r[0].results 
+    })
+  }, 1500)
 
   params.subscribe( $p=>{
     if ( !loading ){
@@ -41,29 +57,41 @@ $: console.log('last_page:', last_page, 'params.page:',$params.page)
 <!--	<div class="py-2">Show 
     <select name="dtBasicExample_length" aria-controls="dtBasicExample" style="width:4rem" class="custom-select custom-select-sm form-control form-control-sm"><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select> entries
   </div> -->
-	<label>Filter by
-    <input placeholder="Last name" bind:value={$params.name_last} type="search" style="width:6rem; display:inline-block" class="form-control form-control-sm ml-1" >
-    <input placeholder="Country" bind:value={$params.addr_country} type="search" style="width:6rem; display:inline-block" class="form-control form-control-sm" >
-    <input placeholder="City" bind:value={$params.addr_city} type="search" style="width:6rem; display:inline-block" class="form-control form-control-sm" >
-    <input placeholder="Postal" bind:value={$params.addr_post_code} type="search" style="width:6rem; display:inline-block" class="form-control form-control-sm" >
+    <label>Filter by
+      <input placeholder="Last name" bind:value={$params.name_last} type="search" class="filter form-control form-control-sm ml-1" >
+      <input list="countries" placeholder="Country" bind:value={$params.addr_country} type="search" class="filter form-control form-control-sm" >
+      <datalist id="countries">
+        {#each countries_list as country}
+          <option value="{country}">
+        {/each}
+      </datalist>    
+      <input list="cities" placeholder="City" bind:value={$params.addr_city} type="search" class="filter form-control form-control-sm" >
+      <datalist id="cities">
+        {#each cities_list as city}
+          <option value="{city}">
+        {/each}
+      </datalist>    
+      <input placeholder="Postal" bind:value={$params.addr_post_code} type="search" class="filter form-control form-control-sm" >
+    </label>
     <div class="form-check" style="display: inline-block;">
-      <input type="checkbox" bind:checked={$params.show_all} class="form-check-input" id="exampleCheck1">
-      <label class="form-check-label" for="exampleCheck1">Include deactivated</label>    
-    </div>
-  </label>
+      <input type="checkbox" bind:checked={$params.show_all} class="form-check-input" id="show_all">
+      <label class="form-check-label" for="show_all">Include deactivated</label>    
+    </div>  
 	</div>
-	<div style="flex:1; overflow:auto">
-		<Table bind:list={list}>
+	<div class="table-parent">
+		<Table>
       <thead slot="thead">
         <tr>
-          <th class="th-sm">#</th>
+          <th class="th-sm" align="right">#</th>
           <th class="th-sm sorting">Name/email/phone</th>
           <th class="th-sm">Address/post code</th>
           <th class="th-sm">Active</th>
         </tr>        
       </thead>
       {#each list as row, i (row.customer_uuid)}
-        <tr in:fly="{{delay: i*30, duration: 100,  x: 50*Math.sign($params.page - last_page), y:Math.sign($params.page - last_page)===0?30:0, opacity: 0}}">
+        <tr in:fly="{{delay: i*30, duration: 100,  x: 50*Math.sign($params.page - last_page), y:Math.sign($params.page - last_page)===0?30:0, opacity: 0}}"
+          on:click={()=>{ selectedRow = {...row}; showModal=true}} 
+          class:table-active={selectedRow.customer_uuid == row.customer_uuid} >
           <td align="right">{i+1+($params.page-1) * list.length}.
           </td>
           <td ><b>{row.name_last} {row.name_first}</b><br>
@@ -81,9 +109,7 @@ $: console.log('last_page:', last_page, 'params.page:',$params.page)
           </td>
 
           <td>
-            {#if row.is_active}
-              <span style="color:green">&#10004</span>
-            {/if}
+              <span>{@html row.is_active?'&#10004':'&#10006'}</span>
           </td>
         </tr>
       {/each}
@@ -118,3 +144,19 @@ $: console.log('last_page:', last_page, 'params.page:',$params.page)
 		</ul>
 	</nav>	
 </div>
+
+{#if showModal}
+  <Client bind:show={showModal} bind:selectedRow></Client>
+{/if}
+
+<style>
+.filter {
+  width: 7rem; 
+  display: inline-block;
+}
+.table-parent{
+  flex:1; 
+  overflow:auto; 
+  border-top: solid 1px #dee2e6;
+}
+</style>

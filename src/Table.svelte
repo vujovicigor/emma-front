@@ -2,10 +2,16 @@
 	let name = 'world';
 </script>
 <style>
+  :global(.table td) {
+    vertical-align: middle !important;
+  }
 	:global(.th-sm) {
 		position:sticky;
 		top:0;
 		background-color:white;
+    z-index: 1;
+    cursor: pointer;
+    border-top:none !important;
 	}
 	:global(.sorting_desc:after) {
     opacity: 1;
@@ -28,22 +34,10 @@
 <table id="dtBasicExample" style="height:200px" class="table table-striped table-hover table-lg" cellspacing="0" width="100%">
   <slot name="thead">
     <tr>
-      <th class="th-sm sorting">Name
-      </th>
-      <th class="th-sm sorting">Position
-      </th>
-      <th class="th-sm sorting">Office
-      </th>
-      <th class="th-sm sorting">Age
-      </th>
-      <th class="th-sm sorting">Start date
-      </th>
-      <th class="th-sm sorting">Salary
-      </th>
+      <th class="th-sm sorting">Column1</th>
     </tr>  
   </slot>
   <tbody>
     <slot></slot>
   </tbody>
-
 </table>
