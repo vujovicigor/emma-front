@@ -1,4 +1,4 @@
-# svelte app
+# EMMA coding challenge(svelte)
 
 This is a frontend project for EMMA coding challenge.
 
