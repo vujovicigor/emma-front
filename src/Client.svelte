@@ -6,8 +6,7 @@ export let selectedRow = {}
 
 <Modal on:close={()=>show=false}>
   <h2 slot='header'>
-    modal
-    <small><em>adjective</em>  mod·al \ˈmō-dəl\</small>
+    Customer details
   </h2>
 
   <form>
@@ -58,7 +57,6 @@ export let selectedRow = {}
       </label>
     </div>
     
-
     <div class="form-group form-check">
       <input type="checkbox" class="form-check-input" id="active" bind:checked={selectedRow.is_active}>
       <label class="form-check-label" for="active">Active</label>
@@ -68,8 +66,7 @@ export let selectedRow = {}
 
   <h2 slot='footer'>
     <button class="btn" on:click={()=>{ show=false }}>Cancel</button>
-    <button class="btn btn-primary" 
-      >Save</button>
+    <button class="btn btn-primary">Save</button>
   </h2>    
 
 </Modal>

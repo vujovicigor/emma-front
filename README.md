@@ -2,6 +2,10 @@
 
 This is a frontend project for EMMA coding challenge.
 
+## Demo
+
+Visit [emma.cf](https://emma.cf)
+
 ## Get started
 
 Install the dependencies...
