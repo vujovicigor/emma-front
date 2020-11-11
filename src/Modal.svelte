@@ -111,7 +111,7 @@ let modalsStack = []
     if (event.key === 'Tab') {
       // trap focus
       const nodes = modalsStack[modalsStack.length-1].nodes.querySelectorAll('*');
-      console.log('tab', nodes)
+      //console.log('tab', nodes)
       const tabbable = Array.from(nodes).filter(n => n.tabIndex >= 0);
       let index = tabbable.indexOf(document.activeElement);
       if (index === -1 && event.shiftKey) index = 0;
@@ -142,10 +142,9 @@ let modalsStack = []
 
   function onBgClick(event){
     //()=>(fire('close'))
-    console.log(event, modal_element,event.target, modal_element.contains(event.target))
+    //console.log(event, modal_element,event.target, modal_element.contains(event.target))
     if ( modal_element == event.target && !event.defaultPrevented ) 
       fire('close')
-
   }
 
 // blur fix

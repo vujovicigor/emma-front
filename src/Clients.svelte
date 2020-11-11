@@ -5,7 +5,10 @@
   import { fade , fly} from 'svelte/transition';
   import { tick} from 'svelte';
   import Client from '@/Client.svelte'
+	import { setContext } from 'svelte';
 
+  setContext('refresh', refresh);
+  
   let showModal = false
   let selectedRow = {}
   let loading = false
@@ -18,6 +21,23 @@
   })
   let countries_list = []
   let cities_list = []
+
+  function refresh(){
+    if ( !loading ){
+      loading = true
+      fetch2('get', 'public_list_clients', $params)
+      .then((r)=>{
+        //console.log('r', r)
+        if (!r || !r[0] || !r[0].results) { loading = false; return }
+        ( {list, info} = r[0].results )
+        tick().then(()=>{ last_page = $params.page })
+        loading = false
+        if ($params.page !== 1 && $params.page > info.total_pages_count)
+          $params.page = info.total_pages_count  
+      })
+    }     
+  }
+
   setTimeout(()=>{
     fetch2('get', 'public_countries_list', null)
     .then((r)=>{
@@ -28,27 +48,20 @@
     .then((r)=>{
       if (r && r[0])
         cities_list = r[0].results 
-    })
+    })    
   }, 1500)
 
-  params.subscribe( $p=>{
-    if ( !loading ){
-      loading = true
-      fetch2('get', 'public_list_clients', $p)
-      .then((r)=>{
-        //console.log('r', r)
-        if (!r || !r[0] || !r[0].results) { loading = false; return }
-        ( {list, info} = r[0].results )
-        tick().then(()=>{ last_page = $params.page })
-        loading = false
-        if ($p.page !== 1 && $p.page > info.total_pages_count)
-          $params.page = info.total_pages_count  
-      })
-    }    
-  })
+  params.subscribe( refresh ) //$p=>{
+  
+//  })
 
   let list = []
   let info = {}
+
+  function addNew(){
+    selectedRow = { customer_uuid:null, email:null, name_first:null, name_last:null, phone:null, addr_street:null, addr_post_code:null, addr_city:null, addr_country:null, is_active:true }
+    showModal=true
+  }
 </script>
 
 <div style="display:flex; flex-flow:column;overflow: auto;flex: 1;">
@@ -72,11 +85,12 @@
         {/each}
       </datalist>    
       <input placeholder="Postal" bind:value={$params.addr_post_code} type="search" class="filter form-control form-control-sm" >
+      <div class="form-check" style="display: inline-block;">
+        <input type="checkbox" bind:checked={$params.show_all} class="form-check-input" id="show_all">
+        <label class="form-check-label" for="show_all">Include deactivated</label>    
+      </div>  
     </label>
-    <div class="form-check" style="display: inline-block;">
-      <input type="checkbox" bind:checked={$params.show_all} class="form-check-input" id="show_all">
-      <label class="form-check-label" for="show_all">Include deactivated</label>    
-    </div>  
+    <button on:click={addNew}  class="btn">Add</button>
 	</div>
 	<div class="table-parent">
 		<Table>
@@ -109,13 +123,13 @@
           </td>
 
           <td>
-              <span>{@html row.is_active?'&#10004':'&#10006'}</span>
+              <span style="color:{row.is_active?'green':'red'}">{@html row.is_active?'&#10004':'&#10006'}</span>
           </td>
         </tr>
       {/each}
     </Table>
 	</div>
-	<nav aria-label="Page navigation example">
+	<nav>
 		<ul class="pagination justify-content-between pt-2 align-items-center">
 			<span style="font-weight:bold">Showing {1+($params.page-1) * list.length} to {$params.page * list.length} of {info.total_item_count} entries</span>
 			<div class="d-flex">

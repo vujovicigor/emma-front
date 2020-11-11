@@ -1,0 +1,57 @@
+
+<script>
+  import Modal from '@/Modal.svelte'
+  import Table from '@/Table.svelte'
+  export let show
+  export let selectedRow = {}
+  
+  let list = []
+  fetch2('get', 'public_client_history', {customer_uuid:selectedRow.customer_uuid})
+  .then((r)=>{
+    if (!r || !r[0]){ toast.error('Error!'); return }
+    list = r[0].results
+  })    
+</script>
+
+<Modal max_width={'50rem'} height={'30rem'} on:close={()=>show=false}>
+  <h2 slot='header'>
+    {selectedRow.name_first} {selectedRow.name_last} history
+  </h2>
+
+	<div class="table-parent">
+		<Table>
+      <thead slot="thead">
+        <tr>
+          <th class="th-sm sorting">Timestamp</th>
+          <th class="th-sm">Key</th>
+          <th class="th-sm">Changed from</th>
+          <th class="th-sm">Changed to</th>
+        </tr>        
+      </thead>
+      {#each list as row}
+        {#each Object.entries(row.src) as [key, val]}
+          <tr>
+            <td>
+              {new Intl.DateTimeFormat('de-DE',{weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' , hour: 'numeric', minute: 'numeric', second: 'numeric'}).format(new Date(row.ts))}
+            </td>
+            <td>{key}</td>
+            <td>{val}</td>
+            <td>{row.dest[key]}</td>
+          </tr>
+        {/each}
+        {:else}
+        <tr>
+          <td colspan="4"><center><i>No data</i></center></td>
+        </tr>
+      {/each}
+    </Table>
+	</div>
+</Modal>
+
+<style>
+.table-parent{
+  height: 100%;
+  overflow:auto; 
+  border-top: solid 1px #dee2e6;
+}
+</style>
