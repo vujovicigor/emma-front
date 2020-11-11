@@ -4,6 +4,16 @@
   import Table from '@/Table.svelte'
   export let show
   export let selectedRow = {}
+  let nice_names = { 
+    name_first:"First name", 
+    name_last:"Last name", 
+    phone:"Phone", 
+    addr_street:"Street", 
+    addr_post_code:"Postal code", 
+    addr_city:"City", 
+    addr_country:"Country", 
+    is_active:"Active" 
+  }
   
   let list = []
   fetch2('get', 'public_client_history', {customer_uuid:selectedRow.customer_uuid})
@@ -34,7 +44,7 @@
             <td>
               {new Intl.DateTimeFormat('de-DE',{weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' , hour: 'numeric', minute: 'numeric', second: 'numeric'}).format(new Date(row.ts))}
             </td>
-            <td>{key}</td>
+            <td>{nice_names[key] || key}</td>
             <td>{val}</td>
             <td>{row.dest[key]}</td>
           </tr>
