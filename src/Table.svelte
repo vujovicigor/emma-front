@@ -2,26 +2,27 @@
 	let name = 'world';
 </script>
 <style>
-	.th-sm {
+	:global(.th-sm) {
 		position:sticky;
 		top:0;
 		background-color:white;
 	}
-	thead .sorting:after {
-			opacity: 1;
-			content: "\2193";
+	:global(.sorting_desc:after) {
+    opacity: 1;
+    content: "\2193";
 	}	
-	.sorting_asc:after {
+	:global(.sorting_asc:after) {
+    opacity: 1;
     content: "\2191";
-		color:red;
 	}
-	.sorting:after {
+	:global(.sorting:after) {
     position: absolute;
     bottom: 0.7rem;
     right: 0.5rem;
     display: block;
     font-family: 'Glyphicons Halflings';
-    opacity: 0.5;
+    opacity: 0.2;
+    content: "\2195";
 }
 </style>
 <table id="dtBasicExample" style="height:200px" class="table table-striped table-hover table-lg" cellspacing="0" width="100%">

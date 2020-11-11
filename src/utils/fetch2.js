@@ -4,13 +4,13 @@ let authorization = null;
 session.subscribe($session=>{
   authorization = $session?$session.token:null
 })
-const HOSTNAME = "http://localhost:3001/api/v2/"
+//const APIHOSTNAME = "http://localhost:3001/api/v2/"
 
 export const fetch2 = window.fetch2 = function(method, url, obj){
   //console.log('params', obj)
   return axios({
     method: method || 'post',
-    url: HOSTNAME+url,
+    url: window.APIHOSTNAME+url,
     data: obj,
     params: obj,
     headers: {
