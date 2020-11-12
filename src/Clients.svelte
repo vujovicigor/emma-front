@@ -14,7 +14,7 @@
   let loading = false
   let last_page = 0
   let params = writable({
-    sort:'name_first_desc',
+    sort:'name_first_asc',
     page:1,
     addr_city:null,
     show_all:true
@@ -65,20 +65,28 @@
 </script>
 
 <div style="display:flex; flex-flow:column;overflow: auto;flex: 1;">
-	<div style="display:flex; align-items: center;
-    justify-content: space-between;">
+  <div class="form-group">
+    <label for="sortClients">Sort by</label>
+    <select id="sortClients" bind:value={$params.sort} class="form-control form-control-sm" style="width:12rem; display:inline-block;margin-left: 0.5rem;">
+      <option value="name_first_asc">First Name (ascending)</option>
+      <option value="name_first_desc">First Name (descending)</option>
+      <option value="name_last_asc">Last Name (ascending)</option>
+      <option value="name_last_desc">Last Name (descending)</option>
+    </select>
+  </div>
+	<div style="display:flex; align-items: center;justify-content: space-between;">
 <!--	<div class="py-2">Show 
     <select name="dtBasicExample_length" aria-controls="dtBasicExample" style="width:4rem" class="custom-select custom-select-sm form-control form-control-sm"><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select> entries
   </div> -->
-    <label>Filter by
+    <label id="filters">Filter by
       <input placeholder="Last name" bind:value={$params.name_last} type="search" class="filter form-control form-control-sm ml-1" >
-      <input list="countries" placeholder="Country" bind:value={$params.addr_country} type="search" class="filter form-control form-control-sm" >
+      <input list="countries" id="countryFilter" placeholder="Country" bind:value={$params.addr_country} type="search" class="filter form-control form-control-sm" >
       <datalist id="countries">
         {#each countries_list as country}
           <option value="{country}">
         {/each}
       </datalist>    
-      <input list="cities" placeholder="City" bind:value={$params.addr_city} type="search" class="filter form-control form-control-sm" >
+      <input list="cities" id="cityFilter" placeholder="City" bind:value={$params.addr_city} type="search" class="filter form-control form-control-sm" >
       <datalist id="cities">
         {#each cities_list as city}
           <option value="{city}">
@@ -90,9 +98,9 @@
         <label class="form-check-label" for="show_all">Include deactivated</label>    
       </div>  
     </label>
-    <button on:click={addNew}  class="btn">Add</button>
+    <button on:click={addNew} id="addCustomer" class="btn">Add</button>
 	</div>
-	<div class="table-parent">
+	<div class="table-parent" id="customersList">
 		<Table>
       <thead slot="thead">
         <tr>

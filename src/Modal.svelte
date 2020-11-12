@@ -101,7 +101,7 @@ USAGE:
 </style>
 
 <script context="module">
-let modalsStack = []
+  let modalsStack = []
 	function handleKeydown(event) {
     // close topmost modal 
     if (event.keyCode == 27 && modalsStack && modalsStack.length>0){
@@ -132,7 +132,7 @@ let modalsStack = []
   import { onDestroy, onMount } from 'svelte';
   import {dragisa} from './dragisa.js'
 
-  export let opaque = true
+  //export let opaque = true
   export let max_width = '32em'
   export let height// = '30em'
   export let headerClass = 'bg-info'
