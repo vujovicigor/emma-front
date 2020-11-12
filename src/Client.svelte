@@ -1,7 +1,7 @@
 <script>
   import Modal from '@/Modal.svelte'
   import { getContext } from 'svelte';
-  import Toast from 'svelte-toast'
+  import Toast from '@/utils/toast.js'
   import shallowEqual from '@/utils/shallowEqual.js'
   import ClientHistory from '@/ClientHistory.svelte'
   const toast = new Toast()  
@@ -20,7 +20,7 @@
     fetch2(method, service, selectedRow)
     .then((r)=>{
       busy = false
-      if (!r || !r[0]){ toast.error('Error!'); return }
+      if (!r || !r[0]){ return }
       refresh()
       toast.success('Record saved')
       show = false
@@ -32,7 +32,7 @@
     fetch2('delete', 'public_client_delete', {customer_uuid:selectedRow.customer_uuid})
     .then((r)=>{
       busy = false
-      if (!r || !r[0]){ toast.error('Error!'); return }
+      if (!r || !r[0]){ return }
       refresh()
       toast.success('Record removed')
       show = false

@@ -10,12 +10,13 @@
     "@rollup/plugin-alias": "^3.1.1",
     "@rollup/plugin-commonjs": "^14.0.0",
     "@rollup/plugin-node-resolve": "^8.0.0",
+    "jsonschema": "^1.4.0",
     "rollup": "^2.3.4",
     "rollup-plugin-livereload": "^2.0.0",
+    "rollup-plugin-node-polyfills": "^0.2.1",
     "rollup-plugin-svelte": "^6.0.0",
     "rollup-plugin-terser": "^7.0.0",
-    "svelte": "^3.0.0",
-    "svelte-toast": "^1.0.0"
+    "svelte": "^3.0.0"
   },
   "dependencies": {
     "axios": "^0.21.0",
