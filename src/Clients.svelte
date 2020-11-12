@@ -98,7 +98,7 @@
         <label class="form-check-label" for="show_all">Include deactivated</label>    
       </div>  
     </label>
-    <button on:click={addNew} id="addCustomer" class="btn">Add</button>
+    <button on:click={addNew} id="addCustomer" class="btn">Add New</button>
 	</div>
 	<div class="table-parent" id="customersList">
 		<Table>
