@@ -7,8 +7,7 @@
   import Client from '@/Client.svelte'
 	import { setContext } from 'svelte';
 
-  setContext('refresh', refresh);
-  
+  setContext('refresh', refresh);  
   let showModal = false
   let selectedRow = {}
   let loading = false
@@ -22,32 +21,28 @@
   let countries_list = []
   let cities_list = []
 
-  function refresh(){
-    if ( !loading ){
-      loading = true
-      fetch2('get', 'public_list_clients', $params)
-      .then((r)=>{
-        //console.log('r', r)
-        if (!r || !r[0] || !r[0].results) { loading = false; return }
-        ( {list, info} = r[0].results )
-        tick().then(()=>{ last_page = $params.page })
-        loading = false
-        if ($params.page !== 1 && $params.page > info.total_pages_count)
-          $params.page = info.total_pages_count  
-      })
-    }     
+  async function refresh(){
+    if ( loading ) return
+    loading = true
+    let [response, error] = await fetch2('get', 'clients_list', $params)
+    if (error) { loading = false; return }
+    ( {list, info} = response.results )
+    tick().then(()=>{ last_page = $params.page })
+    loading = false
+    if ($params.page !== 1 && $params.page > info.total_pages_count)
+      $params.page = info.total_pages_count  
   }
 
   setTimeout(()=>{
-    fetch2('get', 'public_countries_list', null)
-    .then((r)=>{
-      if (r && r[0])
-        countries_list = r[0].results 
+    fetch2('get', 'countries_list', null)
+    .then(([response, error])=>{
+      if (response)
+        countries_list = response.results 
     })
-    fetch2('get', 'public_cities_list', null)
-    .then((r)=>{
-      if (r && r[0])
-        cities_list = r[0].results 
+    fetch2('get', 'cities_list', null)
+    .then(([response, error])=>{
+      if (response)
+        cities_list = response.results 
     })    
   }, 1500)
 
@@ -63,9 +58,9 @@
     showModal=true
   }
 </script>
-
+<h1 class="p-2 text-center">Clients List</h1>  
 <div style="display:flex; flex-flow:column;overflow: auto;flex: 1;">
-  <div class="form-group">
+  <div>
     <label for="sortClients">Sort by</label>
     <select id="sortClients" bind:value={$params.sort} class="form-control form-control-sm" style="width:12rem; display:inline-block;margin-left: 0.5rem;">
       <option value="name_first_asc">First Name (ascending)</option>
@@ -98,48 +93,50 @@
         <label class="form-check-label" for="show_all">Include deactivated</label>    
       </div>  
     </label>
-    <button on:click={addNew} id="addCustomer" class="btn">Add New</button>
+    <button on:click={addNew} id="addCustomer" class="btn" style="white-space: nowrap">Add New</button>
 	</div>
 	<div class="table-parent" id="customersList">
 		<Table>
       <thead slot="thead">
         <tr>
-          <th class="th-sm" align="right">#</th>
-          <th class="th-sm sorting">Name/email/phone</th>
+          <th class="th-sm" style="width: 3rem;text-align: right;">#</th>
+          <th class="th-sm sorting" style="width: 40%">Name/email/phone</th>
           <th class="th-sm">Address/post code</th>
-          <th class="th-sm">Active</th>
+          <th class="th-sm" style="width: 4rem">Active</th>
         </tr>        
       </thead>
-      {#each list as row, i (row.customer_uuid)}
-        <tr in:fly="{{delay: i*30, duration: 100,  x: 50*Math.sign($params.page - last_page), y:Math.sign($params.page - last_page)===0?30:0, opacity: 0}}"
-          on:click={()=>{ selectedRow = {...row}; showModal=true}} 
-          class:table-active={selectedRow.customer_uuid == row.customer_uuid} >
-          <td align="right">{i+1+($params.page-1) * list.length}.
-          </td>
-          <td ><b>{row.name_last} {row.name_first}</b><br>
-            <i>{row.email}</i><br>
-            <i>{row.phone}</i>
-          </td>
+      {#if true || !loading}
+        {#each list as row, i (row.customer_uuid)}
+          <tr in:fly="{{delay: i*60, duration: 100,  x: 90*Math.sign($params.page - last_page), y:Math.sign($params.page - last_page)===0?30:0, opacity: 0}}"
+            on:click={()=>{ selectedRow = {...row}; showModal=true}} 
+            class:table-active={selectedRow.customer_uuid == row.customer_uuid} >
+            <td style="text-align: right;">{i+1+($params.page-1) * 10}.
+            </td>
+            <td ><b>{row.name_last} {row.name_first}</b><br>
+              <i>{row.email}</i><br>
+              <i>{row.phone}</i>
+            </td>
 
-          <td>
-            {row.addr_street}<br> 
-            {row.addr_city}<br> 
-            {#if row.country}{row.country}{/if}
-            {#if row.addr_post_code}
-              Post code: <i>{row.addr_post_code}</i>
-            {/if}
-          </td>
+            <td>
+              {row.addr_street}<br> 
+              {row.addr_city}, 
+              {#if row.addr_country}{row.addr_country}{/if} <br>
+              {#if row.addr_post_code}
+                Post code: <i>{row.addr_post_code}</i>
+              {/if}
+            </td>
 
-          <td>
-              <span style="color:{row.is_active?'green':'red'}">{@html row.is_active?'&#10004':'&#10006'}</span>
-          </td>
-        </tr>
-      {/each}
+            <td>
+                <span style="color:{row.is_active?'green':'red'}">{@html row.is_active?'&#10004':'&#10006'}</span>
+            </td>
+          </tr>
+        {/each}
+        {/if}
     </Table>
 	</div>
 	<nav>
 		<ul class="pagination justify-content-between pt-2 align-items-center">
-			<span style="font-weight:bold">Showing {1+($params.page-1) * list.length} to {$params.page * list.length} of {info.total_item_count} entries</span>
+			<span style="font-weight:bold">Showing {1+($params.page-1) * 10} to {($params.page-1) * 10 + list.length} of {info.total_item_count} entries</span>
 			<div class="d-flex">
 				<li class="page-item">
 					<button on:click={()=>{ $params.page = Math.max($params.page - 1, 1) }}

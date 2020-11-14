@@ -66,9 +66,6 @@ USAGE:
 </div>
 
 <style>
-  hr {
-    margin: 2rem 0;
-  }
 	.modal-background {
 		position: fixed;
 		top: 0;
@@ -130,7 +127,7 @@ USAGE:
   import { createEventDispatcher } from 'svelte';
   const fire = createEventDispatcher();
   import { onDestroy, onMount } from 'svelte';
-  import {dragisa} from './dragisa.js'
+  import {dragisa} from '@/utils//dragisa.js'
 
   //export let opaque = true
   export let max_width = '32em'

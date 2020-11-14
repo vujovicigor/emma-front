@@ -7,13 +7,15 @@ session.subscribe($session=>{
   authorization = $session?$session.token:null
 })
 //const APIHOSTNAME = "http://localhost:3001/api/v2/"
+const APIHOSTNAME  = window.APIHOSTNAME = 'process.env.APIHOSTNAME' // will be replaced from .env with rollup
 
-function showErrorNotification(errorArray){
+function showErrorNotification(responseData){
   let msg_array = []
-  if (!errorArray || !Array.isArray(errorArray)) return
-  errorArray.forEach((e,i)=>{
-    msg_array.push( e.stack )
-  }); 
+  if (responseData && responseData.message) msg_array.push(responseData.message)
+  if (responseData && responseData.error && Array.isArray(responseData.error)) 
+    responseData.error.forEach((e,i)=>{
+      msg_array.push( e.stack )
+    }); 
   toast.error(msg_array.join('\n'))
 }
 
@@ -21,9 +23,9 @@ export const fetch2 = window.fetch2 = function(method, url, obj){
   //console.log('params', obj)
   return axios({
     method: method || 'post',
-    url: window.APIHOSTNAME+url,
-    data: obj,
-    params: obj,
+    url: APIHOSTNAME+url,
+    data: method=='get'?null:obj,
+    params: method=='get'?obj:null,
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
@@ -33,7 +35,7 @@ export const fetch2 = window.fetch2 = function(method, url, obj){
   .then(function (response) {
       //return [response.data,null]
       if (response.data && response.data.errorCode){
-        showErrorNotification(response.data.error)
+        showErrorNotification(response.data)
         return([null,response.data])
       }
       else
@@ -42,8 +44,8 @@ export const fetch2 = window.fetch2 = function(method, url, obj){
 
   })
   .catch(function (error) {
-    if (error.response && error.response.data && error.response.data.error)
-      showErrorNotification(error.response.data.error)
+    if (error.response && error.response.data && error.response.data.errorCode)
+      showErrorNotification(error.response.data)
     return [null,error]
   });
 }

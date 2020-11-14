@@ -13,36 +13,35 @@
   let clonedSelectedRow = { ...selectedRow }
   $: disabled = shallowEqual(clonedSelectedRow, selectedRow)
   
-  function save(){
+  async function save(){
     busy = true
     let method = selectedRow.customer_uuid?'patch':'post'
-    let service = selectedRow.customer_uuid?'public_client_update':'public_client_insert'
-    fetch2(method, service, selectedRow)
-    .then((r)=>{
-      busy = false
-      if (!r || !r[0]){ return }
-      refresh()
-      toast.success('Record saved')
-      show = false
-    })    
+    let service = selectedRow.customer_uuid?'client_update':'client_insert'
+    let [response, error] = await fetch2(method, service, selectedRow)
+    busy = false
+    if (error) return 
+    refresh()
+    toast.success('Record saved')
+    show = false
   }
   
-  function deleteClient(){
+  async function deleteClient(){
     busy = true
-    fetch2('delete', 'public_client_delete', {customer_uuid:selectedRow.customer_uuid})
-    .then((r)=>{
-      busy = false
-      if (!r || !r[0]){ return }
-      refresh()
-      toast.success('Record removed')
-      show = false
-    })    
+    let [response, error] = await fetch2('delete', 'client_delete', {customer_uuid:selectedRow.customer_uuid})
+    busy = false
+    if (error) return 
+    refresh()
+    toast.success('Record removed')
+    show = false
   }
 </script>
 
 <Modal on:close={()=>show=false}>
-  <h2 slot='header'>
+  <h2 slot='header' style="width:100%">
     Customer details
+    <!--
+    <button class="btn btn-small" style="color:red; position:absolute; right:2rem">Tour?</button>
+    -->
   </h2>
 
   <form>

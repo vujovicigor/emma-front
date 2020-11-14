@@ -31,7 +31,7 @@
     content: "\2195";
 }
 </style>
-<table id="dtBasicExample" style="height:200px" class="table table-striped table-hover table-lg" cellspacing="0" width="100%">
+<table class="table table-striped table-hover table-lg" cellspacing="0" width="100%">
   <slot name="thead">
     <tr>
       <th class="th-sm sorting">Column1</th>

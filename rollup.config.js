@@ -5,6 +5,8 @@ import livereload from 'rollup-plugin-livereload';
 import { terser } from 'rollup-plugin-terser';
 import alias from '@rollup/plugin-alias'
 import nodePolyfills from 'rollup-plugin-node-polyfills';
+import { config } from 'dotenv';
+import replace from '@rollup/plugin-replace';
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -38,6 +40,9 @@ export default {
 		file: 'public/build/bundle.js'
 	},
 	plugins: [
+    replace({  
+      "process.env.APIHOSTNAME": config().parsed.APIHOSTNAME
+    }),    
     alias({ entries: [{ find: '@', replacement: './src' },] }),
 		svelte({
 			// enable run-time checks when not in production

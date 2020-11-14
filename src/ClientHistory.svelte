@@ -2,6 +2,8 @@
 <script>
   import Modal from '@/Modal.svelte'
   import Table from '@/Table.svelte'
+  import Toast from '@/utils/toast.js'
+  const toast = new Toast()    
   export let show
   export let selectedRow = {}
   let nice_names = { 
@@ -16,10 +18,10 @@
   }
   
   let list = []
-  fetch2('get', 'public_client_history', {customer_uuid:selectedRow.customer_uuid})
-  .then((r)=>{
-    if (!r || !r[0]){ toast.error('Error!'); return }
-    list = r[0].results
+  fetch2('get', 'client_history', {customer_uuid:selectedRow.customer_uuid})
+  .then(([response, error])=>{
+    if (error){ toast.error('Error!'); return }
+    list = response.results
   })    
 </script>
 
