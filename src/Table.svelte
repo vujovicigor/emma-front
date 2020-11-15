@@ -14,12 +14,12 @@
     border-top:none !important;
 	}
 	:global(.sorting_desc:after) {
-    opacity: 1;
-    content: "\2193";
+    opacity: 1 !important;
+    content: "\2193" !important;
 	}	
 	:global(.sorting_asc:after) {
-    opacity: 1;
-    content: "\2191";
+    opacity: 1 !important;
+    content: "\2191" !important;
 	}
 	:global(.sorting:after) {
     position: absolute;
@@ -31,7 +31,7 @@
     content: "\2195";
 }
 </style>
-<table class="table table-striped table-hover table-lg" cellspacing="0" width="100%">
+<table class="table table-striped table-hover table-lg table-borderless" cellspacing="0" width="100%">
   <slot name="thead">
     <tr>
       <th class="th-sm sorting">Column1</th>

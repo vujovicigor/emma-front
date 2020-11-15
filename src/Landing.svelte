@@ -24,19 +24,19 @@
     <h2>Emma Landing page</h2>
     <p>We have 2 roles/permissions: <b>Admin</b> and <b>Operator</b></p>
     <p><b>Admin</b> can read/write/insert/delete Customers and Users,<br>
-    while <b>Operator</b> have only read privilegies - he can list the Customers, History and Users
+    while <b>Operator</b> has only read privilegies - he can list the Customers, History and Users
     but he can't alter any record.<br>
     </p>
     <p>You are logged in as <b>{$session.rola}</b> <i>({$session.email})</i>
     </p>
 
     <label for="table">Available services list</label>
-    <table class="table" id="table">
+    <table class="table table-striped table-borderless " id="table">
       <thead>
         <tr>
           <th scope="col">#</th>
-          <th scope="col">Service name</th>
           <th scope="col">Method</th>
+          <th scope="col">Service name</th>
           <th scope="col">Allow role</th>
           <th scope="col">Input params json schema</th>
           

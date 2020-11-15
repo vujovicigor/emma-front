@@ -70,9 +70,6 @@
     </select>
   </div>
 	<div style="display:flex; align-items: center;justify-content: space-between;">
-<!--	<div class="py-2">Show 
-    <select name="dtBasicExample_length" aria-controls="dtBasicExample" style="width:4rem" class="custom-select custom-select-sm form-control form-control-sm"><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select> entries
-  </div> -->
     <label id="filters">Filter by
       <input placeholder="Last name" bind:value={$params.name_last} type="search" class="filter form-control form-control-sm ml-1" >
       <input list="countries" id="countryFilter" placeholder="Country" bind:value={$params.addr_country} type="search" class="filter form-control form-control-sm" >
@@ -100,7 +97,7 @@
       <thead slot="thead">
         <tr>
           <th class="th-sm" style="width: 3rem;text-align: right;">#</th>
-          <th class="th-sm sorting" style="width: 40%">Name/email/phone</th>
+          <th class="th-sm sorting sorting_{$params.sort.endsWith('_desc')?'desc':'asc'}" style="width: 40%">Name/email/phone</th>
           <th class="th-sm">Address/post code</th>
           <th class="th-sm" style="width: 4rem">Active</th>
         </tr>        
