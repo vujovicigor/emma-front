@@ -20,8 +20,10 @@
   })
   let countries_list = []
   let cities_list = []
-
-  async function refresh(){
+  let list = []
+  let info = {}
+  
+  async function refresh(refreshcountriesToo=false){
     if ( loading ) return
     loading = true
     let [response, error] = await fetch2('get', 'clients_list', $params)
@@ -31,9 +33,11 @@
     loading = false
     if ($params.page !== 1 && $params.page > info.total_pages_count)
       $params.page = info.total_pages_count  
+    console.log('refreshcountriesToo',refreshcountriesToo)
+    if (refreshcountriesToo) refreshcountries()
   }
 
-  setTimeout(()=>{
+  function refreshcountries(){
     fetch2('get', 'countries_list', null)
     .then(([response, error])=>{
       if (response)
@@ -44,15 +48,11 @@
       if (response)
         cities_list = response.results 
     })    
-  }, 1500)
+  }
+  setTimeout(refreshcountries, 1500)
 
-  params.subscribe( refresh ) //$p=>{
+  params.subscribe( ()=> refresh() ) //$p=>{
   
-//  })
-
-  let list = []
-  let info = {}
-
   function addNew(){
     selectedRow = { customer_uuid:null, email:null, name_first:null, name_last:null, phone:null, addr_street:null, addr_post_code:null, addr_city:null, addr_country:null, is_active:true }
     showModal=true

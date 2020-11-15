@@ -20,7 +20,7 @@
     let [response, error] = await fetch2(method, service, selectedRow)
     busy = false
     if (error) return 
-    refresh()
+    refresh(true)
     toast.success('Record saved')
     show = false
   }
@@ -30,7 +30,7 @@
     let [response, error] = await fetch2('delete', 'client_delete', {customer_uuid:selectedRow.customer_uuid})
     busy = false
     if (error) return 
-    refresh()
+    refresh(true)
     toast.success('Record removed')
     show = false
   }

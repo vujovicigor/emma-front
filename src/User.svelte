@@ -28,7 +28,7 @@
   }
 </script>
 
-<Modal on:close={()=>show=false}>
+<Modal on:close={()=>show=false} height="auto">
   <h2 slot='header' style="width:100%">
     User details
     <!--

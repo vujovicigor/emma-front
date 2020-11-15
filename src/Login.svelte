@@ -20,7 +20,13 @@
     toast.success('Welcome'); 
     $session = { ...resp.results, isLogedIn:true, token:resp.token }
   }
+
+	function handleKeydown(event) {
+    if (event.key == 'Enter') tryLogin()
+	}
 </script>
+
+<svelte:window on:keydown={handleKeydown}/>
 
 <div class="jumbotron jumbotron-fluid">
   <div class="container" style="max-width: 30rem !important">
