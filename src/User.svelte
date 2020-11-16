@@ -2,6 +2,7 @@
   import Modal from '@/Modal.svelte'
   import Toast from '@/utils/toast.js'
   import shallowEqual from '@/utils/shallowEqual.js'
+  import { fetch2 } from '@/utils/fetch2.js' 
   import { status, refresh, insert, update, remove }from '@/store/userStore.js'
   const toast = new Toast()  
   let busy = false
@@ -9,7 +10,13 @@
   export let selectedRow = {}
   let clonedSelectedRow = { ...selectedRow }
   $: disabled = shallowEqual(clonedSelectedRow, selectedRow)
-  $: console.log('status', $status)
+  //$: console.log('status', $status)
+
+  let rola_type_list = []
+  ;(async function getRolaTypes(){
+    let [response, error] =  await fetch2('get', 'rola_type_list')
+    rola_type_list = response.results
+  })()
 
   async function save(){
     let [response, error] =  selectedRow.user_uuid ? await update(selectedRow) : await insert(selectedRow)
@@ -60,8 +67,9 @@
     <div class="form-group">
       <label style="display:block">Role
         <select bind:value={selectedRow.rola} class="form-control" >
-          <option value="ADMIN">Administrator</option>
-          <option value="OPERATOR">Operator</option>
+          {#each rola_type_list as {value, label}}
+            <option value="{value}">{label}</option>
+          {/each}
         </select>  
       </label>
           

@@ -6,8 +6,8 @@
   const toast = new Toast({duration:2000}) 
 
   let obj = {
-    email:null,
-    password:null
+    email:'demo@demo.demo',
+    password:'demo'
   }
 
   if ($session.token && $session.isLogedIn){
